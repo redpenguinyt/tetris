@@ -1,12 +1,5 @@
-use std::io::stdout;
-
 use console_input::keypress as input;
-use crossterm::{
-    cursor::MoveTo,
-    event::{Event, KeyCode, KeyEvent, KeyEventKind},
-    execute,
-    terminal::{Clear, ClearType},
-};
+use crossterm::event::{Event, KeyCode, KeyEvent, KeyEventKind};
 use gemini_engine::{
     ascii::{Sprite, Text},
     core::{ColChar, Modifier, Vec2D},
@@ -145,10 +138,8 @@ impl MainLoopRoot for Game {
                 // Display an appropriate alert
                 self.alert_display.priorised_alerts_with_score(
                     &[
-                        self.block_manager.check_for_t_spin(
-                            &pre_clear_blocks,
-                            cleared_lines,
-                        ),
+                        self.block_manager
+                            .check_for_t_spin(&pre_clear_blocks, cleared_lines),
                         generate_alert_for_filled_lines(cleared_lines),
                     ],
                     &mut self.score,
@@ -183,9 +174,8 @@ impl MainLoopRoot for Game {
 
         // Held piece display
         if let Some(held_piece) = self.block_manager.held_piece_display() {
-            self.view.draw(
-                &Text::new(Vec2D::new(29, 1), "Hold", Modifier::None),
-            );
+            self.view
+                .draw(&Text::new(Vec2D::new(29, 1), "Hold", Modifier::None));
             self.view.draw_double_width(&held_piece);
         } else {
             self.view.draw(&Sprite::new(
@@ -205,9 +195,16 @@ impl MainLoopRoot for Game {
         // Alerts display
         self.view.draw(&self.alert_display);
         self.alert_display.frame();
-
-        execute!(stdout(), MoveTo(0, 0)).unwrap();
-        execute!(stdout(), Clear(ClearType::FromCursorDown)).unwrap();
+        #[cfg(windows)]
+        {
+            use crossterm::{
+                cursor::MoveTo,
+                execute,
+                terminal::{Clear, ClearType},
+            };
+            use std::io::stdout;
+            execute!(stdout(), MoveTo(0, 0), Clear(ClearType::FromCursorDown)).unwrap();
+        }
         self.view
             .display_render()
             .expect("Failed to print render to screen");
