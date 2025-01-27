@@ -1,6 +1,6 @@
 use std::io::stdout;
 
-use console_input::keypress::{exit_raw_mode, Input};
+use console_input::keypress as input;
 use crossterm::{
     cursor::MoveTo,
     event::{Event, KeyCode, KeyEvent, KeyEventKind},
@@ -56,13 +56,11 @@ impl Game {
 }
 
 impl MainLoopRoot for Game {
-    type InputDataType = Event;
-
     fn get_fps(&self) -> f32 {
         60.0
     }
 
-    fn frame(&mut self, input_data: Option<Self::InputDataType>) {
+    fn frame(&mut self) {
         self.t += 1;
         let mut block_speed = 12;
 
@@ -70,11 +68,11 @@ impl MainLoopRoot for Game {
         let collision = self.collision_manager.get();
 
         // Handle Inputs
-        if let Some(Event::Key(KeyEvent {
+        while let Some(Event::Key(KeyEvent {
             code,
             kind: KeyEventKind::Press,
             ..
-        })) = input_data
+        })) = input::read_and_handle_kb_interrupt(false)
         {
             match code {
                 // Pause
@@ -137,7 +135,7 @@ impl MainLoopRoot for Game {
                 // If the current block is at the very top of the board...
                 if self.block_manager.reset() {
                     println!("Game over!\r");
-                    exit_raw_mode();
+                    input::exit_raw_mode();
                 }
 
                 let cleared_lines = self
@@ -213,15 +211,5 @@ impl MainLoopRoot for Game {
         self.view
             .display_render()
             .expect("Failed to print render to screen");
-    }
-
-    fn sleep_and_get_input_data(
-        &self,
-        fps: f32,
-        elapsed: std::time::Duration,
-    ) -> (bool, Option<Self::InputDataType>) {
-        Input::sleep_fps_and_get_input(fps, elapsed)
-            .exit_on_kb_interrupt()
-            .as_tuple()
     }
 }
