@@ -9,7 +9,7 @@ edition = "2021"
 crossterm = "0.28.1"
 gemini-engine = {version = "1.0.1", default-features = false, features = ["gameloop"]}
 console-input = "0.1.3"
-rand = "0.8.5"
+rand = "0.9.0"
 
 [lints.rust]
 unsafe_code = "forbid"

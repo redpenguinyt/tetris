@@ -18,7 +18,7 @@ pub struct BlockManager {
 impl BlockManager {
     pub fn new(block_place_cooldown: u32, piece_preview_count: usize) -> Self {
         let mut tmp = Self {
-            bag: BlockType::bag()[0..rand::thread_rng().gen_range(1..8)].to_vec(),
+            bag: BlockType::bag()[0..rand::rng().random_range(1..8)].to_vec(),
             block: Block::DEFAULT,
             ghost_block: Block::DEFAULT,
             held_piece: None,

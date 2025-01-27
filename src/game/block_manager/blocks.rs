@@ -37,7 +37,7 @@ impl BlockType {
     ];
     pub fn bag() -> [Self; 7] {
         let mut variants = Self::ALL_VARIANTS;
-        variants.shuffle(&mut rand::thread_rng());
+        variants.shuffle(&mut rand::rng());
         variants
     }
 
