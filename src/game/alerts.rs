@@ -33,11 +33,7 @@ impl AlertDisplay {
         self.alerts.push((String::from(alert), ALERT_LIFETIME));
     }
 
-    pub fn handle_with_score(
-        &mut self,
-        score: &mut i64,
-        score_and_alert: Option<(i64, String)>,
-    ) {
+    pub fn handle_with_score(&mut self, score: &mut i64, score_and_alert: Option<(i64, String)>) {
         if let Some((add_score, alert)) = score_and_alert {
             *score += add_score;
             self.push(&alert);

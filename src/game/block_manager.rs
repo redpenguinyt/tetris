@@ -1,4 +1,7 @@
-use gemini_engine::{containers::{CanCollide, CollisionContainer, PixelContainer}, core::Vec2D};
+use gemini_engine::{
+    containers::{CanCollide, CollisionContainer, PixelContainer},
+    core::Vec2D,
+};
 mod blocks;
 pub use blocks::{block_manipulation as tetris_core, Block, BlockType};
 use rand::Rng;
